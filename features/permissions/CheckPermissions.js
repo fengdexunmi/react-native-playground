@@ -122,7 +122,7 @@ export default class CheckPermissions extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
+        alignItems: 'flex-start',
         backgroundColor: '#F5FCFF',
     },
     buttonContainer: {

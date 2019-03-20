@@ -12,10 +12,12 @@ import {
   StyleSheet,
   Text,
   View,
-  Button
+  Button,
+  ToastAndroid,
 } from 'react-native';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import CheckPermissions from './features/permissions/CheckPermissions';
+import Pomodoro from './features/pomodoro/pomodoro';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -45,6 +47,26 @@ class App extends Component {
             }>
           </Button>
         </View>
+        <View style={styles.buttonContainer}>
+          <Button style={styles.button}
+            title='Show toast'
+            onPress={
+              () => {
+                ToastAndroid.show("Click button.", ToastAndroid.SHORT);
+              }
+            }>
+          </Button>
+        </View>
+        <View style={styles.buttonContainer}>
+          <Button style={styles.button}
+            title='Go to pomodoro page'
+            onPress={
+              () => {
+                navigate('Pomodoro');
+              }
+            }>
+          </Button>
+        </View>
       </View>
     );
   }
@@ -53,18 +75,20 @@ class App extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // justifyContent: 'center',
-    alignItems: 'center',
+    // justifyContent: 'flex-start',
+    alignItems: 'flex-start',
     backgroundColor: '#F5FCFF',
   },
   buttonContainer: {
-    marginTop: 20
+    marginTop: 20,
+    marginLeft: 20,
   }
 });
 
 const StackNavigator = createStackNavigator({
   App,
-  CheckPermissions
+  CheckPermissions,
+  Pomodoro
 }, {
     initialRouteName: 'App',
   });

@@ -18,6 +18,7 @@ import {
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import CheckPermissions from './features/permissions/CheckPermissions';
 import Pomodoro from './features/pomodoro/pomodoro';
+import TinderSwiper from './features/tinderswiper/TinderSwiper'
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -67,6 +68,16 @@ class App extends Component {
             }>
           </Button>
         </View>
+        <View style={styles.buttonContainer}>
+          <Button style={styles.button}
+            title='Tinder Swiper'
+            onPress={
+              () => {
+                navigate('TinderSwiper');
+              }
+            }>
+          </Button>
+        </View>
       </View>
     );
   }
@@ -88,7 +99,8 @@ const styles = StyleSheet.create({
 const StackNavigator = createStackNavigator({
   App,
   CheckPermissions,
-  Pomodoro
+  Pomodoro,
+  TinderSwiper
 }, {
     initialRouteName: 'App',
   });

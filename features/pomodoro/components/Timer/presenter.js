@@ -12,7 +12,9 @@ function formatTime(time) {
 }
 
 class Timer extends Component {
-    componentWilReceiveProps(nextProps) {
+
+    componentWillReceiveProps(nextProps) {
+        console.log('componentWillReceiveProps');
         const currentProps = this.props;
         if (!currentProps.isPlaying && nextProps.isPlaying) {
             const timerInterval = setInterval(() => {
@@ -44,10 +46,10 @@ class Timer extends Component {
                 </View>
                 <View style={styles.lower}>
                     {!isPlaying && (
-                        <Button title='start' onPress={startTimer} />
+                        <Button title="start" onPress={startTimer} color='tomato' />
                     )}
                     {isPlaying && (
-                        <Button title='stop' onPress={restartTimer} />
+                        <Button title='stop' onPress={restartTimer} color='tomato' />
                     )}
                 </View>
             </View>
@@ -58,7 +60,7 @@ class Timer extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: "#CE0B24"
+        backgroundColor: "#F5FCFF"
     },
     lower: {
         flex: 1,
@@ -74,7 +76,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     time: {
-        color: "white",
+        color: "tomato",
         fontSize: 120,
         fontWeight: "100"
     }

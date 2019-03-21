@@ -13,15 +13,6 @@ function mapStateToProps(state) {
     };
 }
 
-// const mapStateToProps = (state) => {
-//     const { isPlaying, elapsedTime, timerDuration } = state;
-//     return {
-//         isPlaying,
-//         elapsedTime,
-//         timerDuration
-//     }
-// }
-
 function mapDispatchToProps(dispatch) {
     return {
         startTimer: bindActionCreators(pomodoroActions.startTimer, dispatch),
@@ -29,13 +20,5 @@ function mapDispatchToProps(dispatch) {
         addSecond: bindActionCreators(pomodoroActions.addSecond, dispatch),
     };
 }
-
-// const mapDispatchToProps = (dispatch) => {
-//     return {
-//         startTimer: bindActionCreators(pomodoroActions.startTimer, dispatch),
-//         restartTimer: bindActionCreators(pomodoroActions.restartTimer, dispatch),
-//         addSecond: bindActionCreators(pomodoroActions.addSecond, dispatch),
-//     }
-// }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Timer);

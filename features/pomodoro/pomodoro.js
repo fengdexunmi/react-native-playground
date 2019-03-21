@@ -10,6 +10,11 @@ let store = createStore(reducer);
 console.log(store.getState());
 
 export default class Pomodoro extends React.Component {
+
+    static navigationOptions = {
+        title: 'Pomodoro',
+    };
+
     render() {
         return (
             <Provider store={store}>

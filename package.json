@@ -16,6 +16,7 @@
     "expo-font": "^4.0.0",
     "react": "16.8.3",
     "react-native": "0.59.1",
+    "react-native-animatable": "^1.3.2",
     "react-native-gesture-handler": "^1.0.17",
     "react-native-snap-carousel": "^3.7.5",
     "react-navigation": "^3.4.1",

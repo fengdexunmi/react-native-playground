@@ -20,6 +20,7 @@ import CheckPermissions from './features/permissions/CheckPermissions';
 import Pomodoro from './features/pomodoro/pomodoro';
 import TinderSwiper from './features/tinderswiper/TinderSwiper'
 import MyCarousel from './features/carousel/MyCarousel';
+import SearchBar from './features/searchbar/SearchBar';
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
@@ -89,6 +90,16 @@ class App extends Component {
             }>
           </Button>
         </View>
+        <View style={styles.buttonContainer}>
+          <Button style={styles.button}
+            title='SearchBar'
+            onPress={
+              () => {
+                navigate('SearchBar');
+              }
+            }>
+          </Button>
+        </View>
       </View>
     );
   }
@@ -112,7 +123,8 @@ const StackNavigator = createStackNavigator({
   CheckPermissions,
   Pomodoro,
   TinderSwiper,
-  MyCarousel
+  MyCarousel,
+  SearchBar
 }, {
     initialRouteName: 'App',
   });

@@ -1,6 +1,12 @@
 ## React Native Playground
 Build native mobile apps using React Native.
 
+## Guide
+If you encounter a problem:  
+ `Before building your project, you need to accept the license agreements and complete the installation of the missing components using the Android Studio SDK Manager.`  
+ Navigate to sdkmanager.
+~/Library/Android/sdk/tools/bin Than run sdkmanager ./sdkmanager --licenses and accept the licenses you need.
+
 ## Features
 ```
 features

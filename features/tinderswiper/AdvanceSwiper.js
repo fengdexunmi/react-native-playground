@@ -1,8 +1,7 @@
 import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
-import { 
+import {
     StyleSheet,
-    Text,
     View,
     Animated,
     PanResponder,
@@ -11,12 +10,12 @@ import {
     BackHandler,
     TouchableOpacity,
     TouchableNativeFeedback
- } from "react-native";
+} from "react-native";
 import clamp from "clamp";
 
 const has = Object.prototype.hasOwnProperty;
 
-let SWIPER_THRESHOLD = 120;
+let SWIPE_THRESHOLD = 120;
 
 const styles = StyleSheet.create({
     container: {
@@ -46,37 +45,11 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
     },
-    wrapper: {
-        backgroundColor: '#009688',
-    },
-    slide1: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#e91e63',
-    },
-    slide2: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#673ab7',
-    },
-    slide3: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#3f51b5',
-    },
-    text: {
-        color: '#fff',
-        fontSize: 30,
-        fontWeight: 'bold',
-    },
 });
 
-const {height: deviceHeight} = Dimensions.get('window');
+const { height: deviceHeight } = Dimensions.get('window');
 
-class AdvanceSwiper extends PureComponent {
+export default class AdvanceSwiper extends PureComponent {
     static propTypes = {
         children: PropTypes.array,
         index: PropTypes.number,
@@ -104,13 +77,13 @@ class AdvanceSwiper extends PureComponent {
         renderHeader: PropTypes.func,
         showPagination: PropTypes.bool,
         paginationDotColor: PropTypes.string,
-        paginationActiceDotColor: PropTypes.string,
+        paginationActiveDotColor: PropTypes.string,
         showPaginationBelow: PropTypes.bool,
         hidePaginationOnLast: PropTypes.bool,
         renderPagination: PropTypes.func,
         onFinish: PropTypes.func,
         uuid: PropTypes.string,
-        swipeDirection: PropTypes.string, 
+        swipeDirection: PropTypes.string,
     };
 
     static defaultProps = {
@@ -124,40 +97,41 @@ class AdvanceSwiper extends PureComponent {
         scaleOthers: true,
         stackOffsetY: 5,
         stackDepth: 5,
-        onClick: () => {},
-        onRightSwipe: () => {},
-        onLeftSwipe: () => {},
+        onClick: () => { },
+        onRightSwipe: () => { },
+        onLeftSwipe: () => { },
+        onRemoveCard: () => { },
         renderCard: null,
-        onRemoveCard: () => {},
+        style: styles.container,
         dragY: true,
         smoothTransition: false,
         tapToNext: false,
         dragDownToBack: false,
         backPressToBack: true,
         swipeThroughStack: false,
-        onFirstBackPressed: () => {},
-        renderHeader: () => {},
+        onFirstBackPressed: () => { },
+        renderHeader: () => { },
         showPagination: true,
         paginationDotColor: '#C5C5C5',
-        paginationActiceDotColor: '#4D4D4E',
+        paginationActiveDotColor: '#4D4D4E',
         showPaginationBelow: false,
         hidePaginationOnLast: false,
         renderPagination: null,
-        onFinish: () => {},
+        onFinish: () => { },
         uuid: 'Y8sivEVkWc0p',
-        swipeDirection: 'right', 
-    }
+        swipeDirection: 'right',
+    };
 
     constructor(props) {
         super(props);
-        const {children, swiperThreshold, index} = this.props;
-        SWIPER_THRESHOLD = swiperThreshold || SWIPER_THRESHOLD;
+        const { children, swiperThreshold, index } = this.props;
+        SWIPE_THRESHOLD = swiperThreshold || SWIPE_THRESHOLD;
 
         this.currentIndex = {};
         this.guid = props.uuid;
-        if (!this.currentIndex[this.guid]) {
-            this.currentIndex[this.guid] = index;
-        }
+
+        if (!this.currentIndex[this.guid]) this.currentIndex[this.guid] = index;
+        
 
         this.pan = new Animated.ValueXY();
         this.valueX = 0;
@@ -195,8 +169,8 @@ class AdvanceSwiper extends PureComponent {
             BackHandler.addEventListener('hardwareBackPress', this.handleBackPress);
         }
 
-        this.pan.x.addListener(({value}) => {this.valueX = value;});
-        this.pan.y.addListener(({value}) => {this.valueY = value;});
+        this.pan.x.addListener(({ value }) => { this.valueX = value; });
+        this.pan.y.addListener(({ value }) => { this.valueY = value; });
     }
 
     componentWillUnmount() {
@@ -216,10 +190,10 @@ class AdvanceSwiper extends PureComponent {
         this.lastX = gestureState.moveX;
         this.lastY = gestureState.moveY;
         return false;
-    };
+    }
 
     handleMoveShouldSetPanResponder = (e, gestureState) => {
-        Math.abs(gestureState.dx) > 5 || Math.abs(gestureState.dy) > 5;
+        return Math.abs(gestureState.dx) > 5 || Math.abs(gestureState.dy) > 5;
     }
 
     handlePanResponderGrant = () => {
@@ -231,7 +205,7 @@ class AdvanceSwiper extends PureComponent {
         null, { dx: this.pan.x, dy: this.props.dragY ? this.pan.y : new Animated.Value(0) },
     ]);
 
-    handlePanResponderEnd = (e, { vx, vy, dx, dy}) => {
+    handlePanResponderEnd = (e, { vx, vy, dx, dy }) => {
         const { card } = this.state;
         this.pan.flattenOffset();
 
@@ -259,12 +233,12 @@ class AdvanceSwiper extends PureComponent {
         if (vy >= 0) {
             velocityY = clamp(vy, 4.5, 10);
         } else if (vy < 0) {
-            velocityY = clamp(vy * -1, 4.5, 19) * -1;
+            velocityY = clamp(vy * -1, 4.5, 10) * -1;
         } else {
             velocityY = dy < 0 ? -6 : 6;
         }
 
-        if (dx === 0 && dy === 0) {
+        if ((dx === 0) && (dy === 0)) {
             onClick(card);
             if (tapToNext) {
                 this.advanceState(velocity, vy, true);
@@ -273,7 +247,7 @@ class AdvanceSwiper extends PureComponent {
 
         const accumulatedX = Math.abs(dx);
 
-        if (dragDownToBack && accumulatedX < 20 && dy > SWIPER_THRESHOLD - 30) {
+        if (dragDownToBack && accumulatedX < 20 && dy > SWIPE_THRESHOLD - 30) {
             this.advanceState(velocity, vy, false);
             return;
         }
@@ -281,7 +255,7 @@ class AdvanceSwiper extends PureComponent {
         const panX = Math.abs(this.valueX);
         const panY = Math.abs(this.valueY);
 
-        if ((!isNaN(panY) && panX > SWIPER_THRESHOLD) || (!isNaN(panY) && panY < SWIPER_THRESHOLD)) {
+        if ((!isNaN(panY) && panX > SWIPE_THRESHOLD) || (!isNaN(panY) && panY > SWIPE_THRESHOLD)) {
             if (stack) {
                 if (this.valueX > 0 && swipeDirection === 'right') {
                     onRightSwipe(card);
@@ -297,9 +271,8 @@ class AdvanceSwiper extends PureComponent {
                 this.advanceState(velocity, vy, true);
             } else {
                 onLeftSwipe(card);
-                this.advanceState(this.currentIndex[this.guid]);
+                this.advanceState(velocity, vy, false);
             }
-
             onRemoveCard(this.currentIndex[this.guid]);
         } else {
             this.resetPan();
@@ -307,15 +280,13 @@ class AdvanceSwiper extends PureComponent {
     };
 
     handleDirection = (isNext) => {
-        if (!this.isComponentMounted) {
-            return;
-        }
+        if (!this.isComponentMounted) { return; }
 
         this.resetState();
 
         if (this.props.stack) {
             if ((this.props.dragDownToBack || this.props.backPressToBack) && !isNext) {
-                if (this.currentIndex[this.guid] >0) {
+                if (this.currentIndex[this.guid] > 0) {
                     this.currentIndex[this.guid] -= 1;
 
                     this.setState({
@@ -341,11 +312,8 @@ class AdvanceSwiper extends PureComponent {
                     this.props.onFinish();
                 }
             }
-        } else if (isNext) {
-            this.goToNextCard();
-        } else {
-            this.goToPrevCard();
-        }
+        } else if (isNext) this.goToNextCard();
+        else this.goToPrevCard();
     }
 
     advanceState = (velocityX, vy, isNext, accumulatedX, velocityY) => {
@@ -354,29 +322,27 @@ class AdvanceSwiper extends PureComponent {
         if (smoothTransition) {
             this.handleDirection(isNext);
         } else {
-            const velocity = accumulatedX < SWIPER_THRESHOLD ? 
+            const velocity = accumulatedX < SWIPE_THRESHOLD ?
                 { x: 0, y: velocityY } : { x: velocityX, y: vy };
-            
+
             this.cardAnimation = Animated.decay(this.pan, {
-                velocity, 
+                velocity,
                 deceleration: stack ? 0.99 : 0.986,
             });
 
             this.cardAnimation.start((status) => {
                 if (status.finished) {
                     this.handleDirection(isNext);
-                } else {
-                    this.resetState();
-                }
-
+                } else this.resetState();
+                
                 this.cardAnimation = null;
             });
         }
     }
 
-    goToNextCard= () => {
+    goToNextCard = () => {
         const total = this.props.children.length;
-        if (this.currentIndex[this.guid] < total -1) {
+        if (this.currentIndex[this.guid] < total - 1) {
             this.currentIndex[this.guid] += 1;
             this.setState({
                 card: this.props.children[this.currentIndex[this.guid]],
@@ -384,6 +350,7 @@ class AdvanceSwiper extends PureComponent {
         } else if (this.currentIndex[this.guid] === total - 1) {
             if (this.props.loop) {
                 this.currentIndex[this.guid] = 0;
+
                 this.setState({
                     card: this.props.children[this.currentIndex[this.guid]],
                 });
@@ -408,12 +375,12 @@ class AdvanceSwiper extends PureComponent {
     animateEntrance = () => {
         Animated.timing(
             this.textAnim,
-            {toValue: 1},
+            { toValue: 1 },
         ).start();
 
         Animated.spring(
             this.enter,
-            {toValue: 1, tension: 20},
+            { toValue: 1, tension: 20 },
         ).start();
     }
 
@@ -427,33 +394,31 @@ class AdvanceSwiper extends PureComponent {
     resetState = () => {
         const { stack, smoothTransition } = this.props;
 
-        this.pan.setValue({x: 0, y: 0});
-        this.enter.setValue(stack || smoothTransition ? 0.985: 0.97);
+        this.pan.setValue({ x: 0, y: 0 });
+        this.enter.setValue(stack || smoothTransition ? 0.985 : 0.97);
         this.textAnim.setValue(0.8);
         this.animateEntrance();
     }
 
     forceLeftSwipe = () => {
         this.cardAnimation = Animated.timing(this.pan, {
-            toValue: {x: -500, y: 0},
+            toValue: { x: -500, y: 0 },
         }).start((status) => {
             this.resetState();
-            if (status.finished) {
-                this.handleDirection(false);
-            }
+            if (status.finished) this.handleDirection(false);
+
             this.cardAnimation = null;
         });
         this.props.onRemoveCard(this.currentIndex[this.guid]);
     }
 
-    forceRightSWipe = () => {
+    forceRightSwipe = () => {
         this.cardAnimation = Animated.timing(this.pan, {
-            toValue: {x: 500, y: 0},
+            toValue: { x: 500, y: 0 },
         }).start((status) => {
             this.resetState();
-            if (status.finished) {
-                this.handleDirection(true);
-            }
+            if (status.finished) this.handleDirection(true);
+
             this.cardAnimation = null;
         });
         this.props.onRemoveCard(this.currentIndex[this.guid]);
@@ -470,7 +435,8 @@ class AdvanceSwiper extends PureComponent {
     }
 
     calcOffsetY = (index, y) => y * index;
-    callScale = reverserIndex => 1 - ((reverserIndex) * 0.005);
+
+    calcScale = reversedIndex => 1 - ((reversedIndex) * 0.005);
 
     jumpToIndex = (index) => {
         this.currentIndex[this.guid] = index;
@@ -483,46 +449,48 @@ class AdvanceSwiper extends PureComponent {
     renderPagination = () => {
         const total = this.props.children.length;
         const index = this.currentIndex[this.guid];
-        const { paginationDotColor, paginationActiceDotColor,
-             showPaginationBelow, renderPagination, stack, hidePaginationOnLast} = this.props;
+        const { paginationDotColor, paginationActiveDotColor,
+            showPaginationBelow, renderPagination, stack, hidePaginationOnLast } = this.props;
 
         if (renderPagination) {
             return (
-                <View style={[showPaginationBelow && styles.bottomPagination, !stack && { zIndex: 1000 },
-                (hidePaginationOnLast && toal - 1 === index) && { opacity: 0 },]}>
-                {renderPagination(total, index)}
-                </View>
-            );
+                <View 
+                style={[showPaginationBelow && styles.bottomPagination,
+                     !stack && { zIndex: 1000 },
+                (hidePaginationOnLast && total - 1 === index) && { opacity: 0 },
+                ]}
+                >
+                    {renderPagination(total, index)}
+                </View>);
         }
 
         const dots = [];
         for (let i = 0; i < total; i += 1) {
-            const Touchable = Platform.OS == "android" ? TouchableNativeFeedback : TouchableOpacity;
+            const Touchable = Platform.OS === "android" ? TouchableNativeFeedback: TouchableOpacity
             dots.push(
                 <Touchable
                     hitSlop={{ top: 10, left: 10, bottom: 10, right: 10 }}
                     key={i}
-                    onPress={() => this.jumpToIndex(i)}>
-                    <View style={[styles.dot, { backgroundColor: paginationDotColor || '#C5C5C5' },
-                    index >= i ? { backgroundColor: paginationActiceDotColor || '#4D4D4E' } : null]}>
-                    </View>
-                </Touchable>
-            )
+                    onPress={() => this.jumpToIndex(i)}
+                    >
+                    <View 
+                    style={[styles.dot, { backgroundColor: paginationDotColor || '#C5C5C5' },
+                    index >= i ? { backgroundColor: paginationActiveDotColor || '#4D4D4E' } : null]}
+                    />
+                </Touchable>,
+            );
         }
 
         return (
-          <View
-            style={[
-              styles.dotContainer,
-              showPaginationBelow && styles.bottomPagination,
-              !stack && { zIndex: 1000 },
-              hidePaginationOnLast &&
-                total - 1 === index && { opacity: 0 }
-            ]}
-          >
-            {dots}
-          </View>
-        );
+            <View
+                style={[styles.dotContainer,
+                    showPaginationBelow && styles.bottomPagination,
+                    !stack && { zIndex: 1000 },
+                    (hidePaginationOnLast && total - 1 === index) && { opacity: 0 },
+                ]}
+            >
+                {dots}
+            </View>);
     }
 
     renderStack = () => {
@@ -536,9 +504,9 @@ class AdvanceSwiper extends PureComponent {
 
         const cardStack = reversedCards.map((card, i) => {
             const cardOffsetY = this.calcOffsetY(count - i - 1, offsetY);
-            const cardScaleX = this.callScale(count - i - 1);
+            const cardScaleX = this.calcScale(count - i - 1);
             const cardOffsetYEnd = this.calcOffsetY(count - i - 2, offsetY);
-            const cardScaleEnd = this.callScale(count - i - 2);
+            const cardScaleEnd = this.calcScale(count - i - 2);
 
             let translateY = 0;
             let translateX = 0;
@@ -575,12 +543,12 @@ class AdvanceSwiper extends PureComponent {
                     inputRange: [-120, 0, 120],
                     outputRange: [cardOffsetYEnd, cardOffsetY, cardOffsetYEnd],
                     extrapolate: 'clamp',
-                })
+                });
                 scaleX = Animated.add(this.pan.y, this.pan.x).interpolate({
                     inputRange: [-120, 0, 120],
                     outputRange: [cardScaleEnd, cardScaleX, cardScaleEnd],
                     extrapolate: 'clamp',
-                })
+                });
                 opacity = this.enter.interpolate({ inputRange: [0.6, 1], outputRange: [0.9, 1] });
                 if (this.pan.y === 0) {
                     translateY = this.enter.interpolate({ inputRange: [0.5, 1], outputRange: [0, 30] });
@@ -611,8 +579,7 @@ class AdvanceSwiper extends PureComponent {
                     {...panHandlers}
                 >
                     {card}
-                </Animated.View>
-            );
+                </Animated.View>);
         });
 
         return (
@@ -623,11 +590,12 @@ class AdvanceSwiper extends PureComponent {
     }
 
     renderCard = () => {
-        const {swiper, renderCard, smoothTransition} = this.props;
-        const [ translateX, translateY] = [this.pan.x, this.pan.y];
+        const { swiper, renderCard, smoothTransition } = this.props;
+        const [translateX, translateY] = [this.pan.x, this.pan.y];
 
         const rotate = this.pan.x.interpolate({ inputRange: [-200, 0, 200], outputRange: ['-30deg', '0deg', '30deg'] });
-        const opacity = smoothTransition ? 1 : this.pan.x.interpolate({ inputRange: [-200, 0, 200], outputRange: [0.5, 1, 0.5] });
+        const opacity = smoothTransition ?
+         1 : this.pan.x.interpolate({ inputRange: [-200, 0, 200], outputRange: [0.5, 1, 0.5] });
 
         const scale = this.enter;
 
@@ -649,7 +617,7 @@ class AdvanceSwiper extends PureComponent {
     }
 
     render() {
-        const {stack, renderHeader, style: propStyle, showPagination} = this.props;
+        const { stack, renderHeader, style: propStyle, showPagination } = this.props;
 
         return (
             <View style={[styles.container, propStyle]}>
@@ -660,26 +628,3 @@ class AdvanceSwiper extends PureComponent {
         );
     }
 }
-
-export default () =>
-    <AdvanceSwiper
-        style={styles.wrapper}
-        paginationStyle={{ container: { backgroundColor: 'transparent' } }}
-        paginationLeft={''}
-        paginationRight={''}
-        smoothTransition
-        stack
-        dragDownToBack
-        dragY
-    >
-        <View style={styles.slide1}>
-            <Text style={styles.text}>Hello Swiper</Text>
-        </View>
-        <View style={styles.slide2}>
-            <Text style={styles.text}>Beautiful</Text>
-        </View>
-        <View style={styles.slide3}>
-            <Text style={styles.text}>And simple</Text>
-        </View>
-    </AdvanceSwiper>;
-

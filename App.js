@@ -19,7 +19,7 @@ import { createStackNavigator, createAppContainer } from 'react-navigation';
 import CheckPermissions from './features/permissions/CheckPermissions';
 import Pomodoro from './features/pomodoro/pomodoro';
 import TinderSwiper from './features/tinderswiper/TinderSwiper'
-import SwiperAnimated from './features/tinderswiper/AdvanceSwiper'
+import stack from './features/tinderswiper/stack'
 import MyCarousel from './features/carousel/MyCarousel';
 import SearchBar from './features/searchbar/SearchBar';
 
@@ -103,10 +103,10 @@ class App extends Component {
         </View>
         <View style={styles.buttonContainer}>
           <Button style={styles.button}
-            title='SwiperAnimated'
+            title='stack'
             onPress={
               () => {
-                navigate('SwiperAnimated');
+                navigate('stack');
               }
             }>
           </Button>
@@ -134,7 +134,7 @@ const StackNavigator = createStackNavigator({
   CheckPermissions,
   Pomodoro,
   TinderSwiper,
-  SwiperAnimated,
+  stack,
   MyCarousel,
   SearchBar
 }, {
